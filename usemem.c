@@ -7,8 +7,30 @@
 
 int main(int argc, char const** argv)
 {
+	size_t MB = 100;
+
+	if (argc > 1)
+	{
+		char* end = NULL;
+		errno = 0;
+		long l = strtol(argv[1], &end, 0);
+		if (*end)
+		{
+			fprintf(stderr, "Failed to memsize argument.");
+			return 1;
+		}
+		if (errno)
+		{
+			fprintf(stderr, "Error parsing memsize. %s", strerror(errno));
+			return 1;
+		}
+		MB = l;
+	}
+
+	printf("Allocating %zu MiB.\n", MB);
+
 	size_t const MiB = 1024 * 1024;
-	size_t len = 200 * MiB;
+	size_t len = MB * MiB;
 	void* m = malloc(len);
 	if (m == NULL)
 	{
